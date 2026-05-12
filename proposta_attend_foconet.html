@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proposta Comercial — Solução Operacional Visual | Attend · Foconet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;500;600;700;800;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   RESET & ROOT
+═══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: #0d0f14;
+  color: #f0f2f8;
+  font-family: 'Barlow', sans-serif;
+  font-weight: 400;
+  overflow-x: hidden;
+}
+
+:root {
+  --red:    #e8001e;
+  --red-d:  rgba(232,0,30,.12);
+  --red-b:  rgba(232,0,30,.35);
+  --yellow: #f5a800;
+  --yel-d:  rgba(245,168,0,.10);
+  --yel-b:  rgba(245,168,0,.32);
+  --green:  #1fa855;
+  --blue:   #1a6edc;
+  --purple: #8b5cf6;
+  --bg:     #0d0f14;
+  --bg2:    #13161e;
+  --bg3:    #191d28;
+  --bg4:    #1e2330;
+  --ln:     rgba(255,255,255,.06);
+  --ln2:    rgba(255,255,255,.11);
+  --ln3:    rgba(255,255,255,.20);
+  --t1:     #f0f2f8;
+  --t2:     #8898b8;
+  --t3:     #3d4e68;
+  --fw-head: 'Bebas Neue', sans-serif;
+  --fw-cond: 'Barlow Condensed', sans-serif;
+}
+
+/* ═══════════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════════ */
+@keyframes fadeUp   { from { opacity:0; transform:translateY(32px) } to { opacity:1; transform:none } }
+@keyframes fadeIn   { from { opacity:0 } to { opacity:1 } }
+@keyframes blink    { 0%,100%{opacity:1} 45%{opacity:.08} }
+@keyframes glow-r   { 0%,100%{box-shadow:0 0 0 0 rgba(232,0,30,0)} 55%{box-shadow:0 0 28px 4px rgba(232,0,30,.22)} }
+@keyframes glow-y   { 0%,100%{box-shadow:0 0 0 0 rgba(245,168,0,0)} 55%{box-shadow:0 0 22px 3px rgba(245,168,0,.18)} }
+@keyframes scan     { from{transform:translateY(-100%)} to{transform:translateY(100vh)} }
+@keyframes ticker   { from{transform:translateX(100%)} to{transform:translateX(-100%)} }
+@keyframes counterUp{ from{opacity:0;transform:scale(.8)} to{opacity:1;transform:scale(1)} }
+@keyframes borderPulse{ 0%,100%{border-color:rgba(232,0,30,.25)} 50%{border-color:rgba(232,0,30,.85)} }
+@keyframes float    { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+@keyframes noise    { 0%,100%{opacity:.025} 50%{opacity:.045} }
+
+.reveal { opacity:0; transform:translateY(28px); transition:opacity .65s ease, transform .65s ease; }
+.reveal.in { opacity:1; transform:none; }
+
+/* ═══════════════════════════════════════════
+   NOISE TEXTURE OVERLAY
+═══════════════════════════════════════════ */
+body::before {
+  content:'';
+  position:fixed; inset:0; z-index:999; pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity:.028;
+  animation:noise 4s ease-in-out infinite;
+}
+
+/* scanline */
+body::after {
+  content:'';
+  position:fixed; left:0; right:0; top:0; height:3px; z-index:998; pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(245,168,0,.06),rgba(232,0,30,.04),transparent);
+  animation:scan 12s linear infinite;
+}
+
+/* ═══════════════════════════════════════════
+   LAYOUT CONTAINERS
+═══════════════════════════════════════════ */
+.wrap { max-width:1240px; margin:0 auto; padding:0 32px; }
+.section { padding:80px 0; }
+.section + .section { border-top:1px solid var(--ln); }
+
+/* ═══════════════════════════════════════════
+   TOPBAR
+═══════════════════════════════════════════ */
+.topbar {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  height:52px;
+  background:rgba(13,15,20,.92);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--ln2);
+  display:flex; align-items:center;
+}
+.topbar-inner {
+  display:flex; align-items:center; gap:20px;
+  width:100%; max-width:1240px; margin:0 auto; padding:0 32px;
+}
+.topbar-logo {
+  font-family:var(--fw-head);
+  font-size:20px; letter-spacing:.1em; color:var(--t1);
+  white-space:nowrap; flex-shrink:0;
+}
+.topbar-logo span { color:var(--yellow); }
+.topbar-sep { width:1px; height:18px; background:var(--ln2); flex-shrink:0; }
+.topbar-tag {
+  font-family:var(--fw-cond); font-weight:500;
+  font-size:11px; color:var(--t2);
+  letter-spacing:.12em; text-transform:uppercase;
+}
+.topbar-sp { flex:1; }
+.topbar-cta {
+  font-family:var(--fw-cond); font-weight:700;
+  font-size:13px; letter-spacing:.1em; text-transform:uppercase;
+  color:#fff; background:var(--red);
+  padding:7px 18px; border-radius:2px;
+  text-decoration:none; white-space:nowrap;
+  transition:background .15s;
+}
+.topbar-cta:hover { background:#c8001a; }
+
+/* ═══════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════ */
+.hero {
+  padding:140px 0 80px;
+  background:var(--bg2);
+  position:relative; overflow:hidden;
+}
+/* diagonal bg texture lines */
+.hero::before {
+  content:'';
+  position:absolute; inset:0; pointer-events:none;
+  background-image:
+    linear-gradient(135deg, rgba(245,168,0,.03) 1px, transparent 1px),
+    linear-gradient(45deg, rgba(232,0,30,.03) 1px, transparent 1px);
+  background-size:60px 60px;
+}
+.hero-content { position:relative; z-index:1; }
+
+.hero-eyebrow {
+  font-family:var(--fw-cond); font-weight:700;
+  font-size:13px; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--red); margin-bottom:16px;
+  display:flex; align-items:center; gap:10px;
+}
+.hero-eyebrow::before {
+  content:''; width:32px; height:2px; background:var(--red); flex-shrink:0;
+}
+
+.hero-title {
+  font-family:var(--fw-head);
+  font-size:clamp(56px,8vw,110px);
+  line-height:.95; letter-spacing:.02em;
+  color:var(--t1);
+  margin-bottom:16px;
+}
+.hero-title .hl { color:var(--yellow); }
+
+.hero-subtitle {
+  font-family:var(--fw-cond); font-weight:600;
+  font-size:clamp(14px,2vw,18px);
+  letter-spacing:.12em; text-transform:uppercase;
+  color:var(--t2); margin-bottom:12px;
+}
+.hero-client {
+  font-size:15px; color:var(--t2); margin-bottom:52px;
+}
+.hero-client strong { color:var(--t1); font-weight:600; }
+
+/* HERO 4-CARD GRID */
+.hero-cards {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.hcard {
+  background:var(--bg3);
+  border:1px solid var(--ln2);
+  border-radius:6px;
+  padding:22px 24px;
+  position:relative; overflow:hidden;
+  transition:border-color .2s, transform .2s;
+}
+.hcard:hover { border-color:var(--ln3); transform:translateY(-2px); }
+.hcard::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:var(--yellow);
+}
+.hcard-title {
+  font-family:var(--fw-cond); font-weight:700;
+  font-size:12px; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--yellow); margin-bottom:8px;
+}
+.hcard-body {
+  font-size:15px; color:var(--t2); line-height:1.5;
+  font-weight:500;
+}
+
+/* hero right col: dashboard preview */
+.hero-layout {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:52px; align-items:center;
+}
+.hero-preview {
+  background:var(--bg3);
+  border:1px solid var(--ln2);
+  border-radius:8px;
+  padding:16px;
+  animation:float 5s ease-in-out infinite;
+  position:relative;
+}
+.hero-preview::before {
+  content:''; position:absolute; inset:-1px;
+  border-radius:9px; pointer-events:none;
+  background:linear-gradient(135deg,rgba(232,0,30,.2),transparent 50%,rgba(245,168,0,.1));
+}
+/* mini dashboard mockup */
+.mini-hdr {
+  background:var(--bg4); border-radius:4px;
+  padding:8px 12px;
+  display:flex; align-items:center; gap:8px;
+  margin-bottom:10px;
+}
+.mini-hdr-logo {
+  font-family:var(--fw-head); font-size:14px;
+  color:var(--t1); letter-spacing:.08em;
+}
+.mini-hdr-logo em { color:var(--yellow); font-style:normal; }
+.mini-hdr-sep { width:1px; height:14px; background:var(--ln2); }
+.mini-hdr-live {
+  display:flex; align-items:center; gap:4px;
+  font-family:var(--fw-cond); font-size:9px;
+  color:var(--red); letter-spacing:.1em;
+}
+.mini-dot { width:5px; height:5px; border-radius:50%; background:var(--red); animation:blink .85s infinite; }
+.mini-hdr-clk {
+  margin-left:auto;
+  font-family:'Barlow Condensed',monospace; font-weight:700;
+  font-size:16px; color:var(--t1);
+}
+
+.mini-cards { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+.mini-card {
+  border-radius:4px; padding:8px 10px;
+  border-left:3px solid;
+  background:var(--bg);
+}
+.mini-card.mc-r { border-color:var(--red); }
+.mini-card.mc-a { border-color:var(--yellow); }
+.mini-card.mc-g { border-color:var(--green); }
+.mini-card.mc-b { border-color:var(--blue); }
+.mini-plate {
+  font-family:var(--fw-head); font-size:13px;
+  margin-bottom:3px;
+}
+.mc-r .mini-plate { color:var(--red); }
+.mc-a .mini-plate { color:var(--yellow); }
+.mc-g .mini-plate { color:var(--t1); }
+.mc-b .mini-plate { color:var(--blue); }
+.mini-tipo {
+  font-family:var(--fw-cond); font-weight:700;
+  font-size:9px; color:var(--t2); letter-spacing:.06em;
+  text-transform:uppercase; margin-bottom:3px;
+}
+.mini-tempo {
+  font-family:'Barlow Condensed',monospace; font-weight:700;
+  font-size:11px;
+}
+.mc-r .mini-tempo { color:var(--red); animation:blink .7s infinite; }
+.mc-a .mini-tempo { color:var(--yellow); }
+.mc-g .mini-tempo { color:var(--green); }
+.mc-b .mini-tempo { color:var(--blue); }
+
+/* ═══════════════════════════════════════════
+   SECTION LABELS
+═══════════════════════════════════════════ */
+.sec-label {
+  font-family:var(--fw-cond); font-weight:700;
+  font-size:11px; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--red); margin-bottom:10px;
+  display:flex; align-items:center; gap:8px;
+}
+.sec-label::after { content:''; flex:1; height:1px; background:var(--ln2); }
+.sec-title {
+  font-family:var(--fw-head);
+  font-size:clamp(36px,5vw,60px);
+  line-height:1; letter-spacing:.03em;
+  color:var(--t1); margin-bottom:12px;
+}
+.sec-title .hl { color:var(--yellow); }
+.sec-body {
+  font-size:16px; color:var(--t2); line-height:1.7;
+  max-width:560px;
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 1 — PAINEL PRINCIPAL (image 2)
+═══════════════════════════════════════════ */
+.painel-section { background:var(--bg); }
+
+.painel-demo {
+  background:var(--bg2);
+  border:1px solid var(--ln2);
+  border-radius:10px;
+  overflow:hidden;
+  margin-top:40px;
+}
+
+/* demo header */
+.demo-hdr {
+  background:var(--bg3);
+  border-bottom:1px solid var(--ln2);
+  padding:14px 24px;
+  display:flex; align-items:center; gap:16px;
+}
+.demo-brand {
+  font-family:var(--fw-head); font-size:22px; letter-spacing:.08em;
+}
+.demo-brand span { color:var(--yellow); }
+.demo-sep { width:1px; height:20px; background:var(--ln2); }
+.demo-clk {
+  font-family:'Barlow Condensed',monospace; font-weight:700;
+  font-size:26px; letter-spacing:.04em; color:var(--t1);
+}
+.demo-live {
+  display:flex; align-items:center; gap:6px;
+  font-family:var(--fw-cond); font-weight:600;
+  font-size:11px; color:var(--red); letter-spacing:.12em;
+}
+.demo-dot { width:7px; height:7px; border-radius:50%; background:var(--red); animation:blink .85s infinite; box-shadow:0 0 6px var(--red); }
+.demo-sp { flex:1; }
+.demo-queue {
+  font-family:var(--fw-cond); font-weight:600;
+  font-size:13px; color:var(--t2); letter-spacing:.06em;
+  text-transform:uppercase;
+}
+.demo-queue span {
+  font-family:var(--fw-head); font-size:24px;
+  color:var(--red); margin-left:10px;
+}
+
+/* MAIN CARD — hero occurrence */
+.demo-body { padding:20px 24px; }
+.demo-main-grid { display:grid; grid-template-columns:1fr auto; gap:16px; margin-bottom:16px; }
+.demo-critical {
+  background:linear-gradient(135deg,rgba(232,0,30,.1),rgba(232,0,30,.04));
+  border:2px solid rgba(232,0,30,.6);
+  border-radius:8px; padding:22px 24px;
+  animation:borderPulse 2s ease-in-out infinite;
+  position:relative; overflow:hidden;
+}
+.demo-critical::before {
+  content:''; position:absolute; left:0; top:0; bottom:0; width:4px;
+  background:var(--red);
+}
+.demo-crit-label {
+  font-family:var(--fw-cond); font-weight:700;
+  font-size:10px; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--red); margin-bottom:10px; padding-left:12px;
+}
+.demo-crit-placa {
+  font-family:var(--fw-head); font-size:56px; letter-spacing:.04em;
+  color:#fff; margin-bottom:4px; padding-left:12px; line-height:1;
+}
+.demo-crit-empresa {
+  font-family:var(--fw-cond); font-weight:600;
+  font-size:12px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--t2); margin-bottom:14px; padding-left:12px;
+}
+.demo-crit-badge {
+  display:inline-block;
+  font-family:var(--fw-cond); font-weight:700;
+  font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--yellow); background:rgba(245,168,0,.12);
+  border:1px solid rgba(245,168,0,.3);
+  border-radius:2px; padding:4px 12px; margin-left:12px; margin-bottom:14px;
+}
+.demo-crit-status {
+  font-family:var(--fw-head); font-size:26px; letter-spacing:.04em;
+  color:var(--red); padding-left:12px;
+  animation:blink 1.2s ease-in-out infinite;
+}
+
+.demo-time-box {
+  background:var(--bg3); border:1px solid var(--ln2);
+  border-radius:8px; padding:20px 18px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  min-width:140px; gap:6px;
+}
+.demo-time-lbl {
+  font-family:var(--fw-cond); font-weight:700;
+  font-size:10px; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--t2);
+}
+.demo-time-val {
+  font-family:var(--fw-head); font-size:42px; letter-spacing:.04em;
+  color:var(--red); line-height:1;
+  animation:blink .7s infinite;
+}
+.demo-time-chegada {
+  font-family:var(--fw-cond); font-weight:500;
+  font-size:11px; color:var(--t3); letter-spacing:.06em;
+}
+
+/* mini cards row */
+.demo-mini-row { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+.demo-mc {
+  border-radius:6px; padding:14px 14px 12px;
+  border:2px solid;
+  transition:border-color .2s;
+}
+.demo-mc.r { border-color:rgba(232,0,30,.5); background:rgba(232,0,30,.06); animation:glow-r 2.5s ease-in-out infinite; }
+.demo-mc.a { border-color:rgba(245,168,0,.5); background:rgba(245,168,0,.05); animation:glow-y 2.5s ease-in-out infinite; }
+.demo-mc.y { border-color:rgba(245,168,0,.35); background:rgba(245,168,0,.04); }
+.demo-mc.n { border-color:rgba(255,255,255,.12); background:rgba(255,255,255,.03); }
+.demo-mc-placa {
+  font-family:var(--fw-head); font-size:22px; letter-spacing:.04em;
+  margin-bottom:3px;
+}
+.demo-mc.r .demo-mc-placa { color:var(--red); }
+.demo-mc.a .demo-mc-placa { color:var(--yellow); }
+.demo-mc.y .demo-mc-placa { color:var(--yellow); }
+.demo-mc.n .demo-mc-placa { color:var(--t2); }
+.demo-mc-emp {
+  font-family:var(--fw-cond); font-size:9px; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--t3); margin-bottom:8px;
+}
+.demo-mc-tipo {
+  font-family:var(--fw-cond); font-weight:800;
+  font-size:13px; letter-spacing:.04em; text-transform:uppercase;
+  color:var(--t1); margin-bottom:6px; line-height:1.2;
+}
+.demo-mc-tempo {
+  font-family:var(--fw-cond); font-weight:600;
+  font-size:11px; color:var(--t3);
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 2 — AVISOS + INTERCALAÇÃO (image 3)
+═══════════════════════════════════════════ */
+.avisos-section { background:var(--bg2); }
+.avisos-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:40px; }
+
+.aviso-demo {
+  background:var(--bg3); border:1px solid var(--ln2); border-radius:8px; padding:28px;
+}
+.aviso-sec-title {
+  font-family:var(--fw-cond); font-weight:700;
+  font-size:18px; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--t1); margin-bottom:6px;
+}
+.aviso-sec-sub {
+  font-size:13px; color:var(--t2); margin-bottom:22px;
+}
+
+.aviso-card {
+  background:linear-gradient(135deg,rgba(232,0,30,.12),rgba(232,0,30,.05));
+  border:2px solid rgba(232,0,30,.5);
+  border-radius:6px;
+  padding:40px 24px;
+  text-align:center;
+  animation:glow-r 2s ease-in-out infinite;
+}
+.aviso-card-head {
+  font-family:var(--fw-head); font-size:38px;
+  color:var(--red); letter-spacing:.04em; margin-bottom:8px;
+}
+.aviso-card-body {
+  font-family:var(--fw-cond); font-weight:800;
+  font-size:28px; letter-spacing:.04em; text-transform:uppercase;
+  color:#fff; line-height:1.2;
+}
+
+/* intercalação list */
+.inter-list { display:flex; flex-direction:column; gap:10px; }
+.inter-item {
+  display:flex; align-items:center; gap:14px;
+  background:var(--bg); border:1px solid var(--ln2); border-radius:6px;
+  padding:16px 18px;
+  transition:border-color .2s;
+}
+.inter-item:hover { border-color:var(--ln3); }
+.inter-bar { width:4px; height:36px; border-radius:2px; flex-shrink:0; }
+.inter-info {}
+.inter-name {
+  font-family:var(--fw-cond); font-weight:700;
+  font-size:13px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--t1); margin-bottom:3px;
+}
+.inter-time { font-size:12px; color:var(--t2); }
+
+/* ═══════════════════════════════════════════
+   SECTION 3 — RECURSOS + ESTRUTURA (image 4)
+═══════════════════════════════════════════ */
+.recursos-section { background:var(--bg); }
+.recursos-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:40px; }
+
+.rec-box {
+  background:var(--bg2); border:1px solid var(--ln2); border-radius:8px; padding:28px;
+}
+.rec-title {
+  font-family:var(--fw-cond); font-weight:700;
+  font-size:17px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--t1); margin-bottom:5px;
+}
+.rec-sub { font-size:13px; color:var(--t2); margin-bottom:20px; }
+
+.alert-demo { display:flex; flex-direction:column; gap:10px; }
+.alert-r {
+  border:2px solid rgba(232,0,30,.6); border-radius:6px;
+  padding:16px 20px; text-align:center;
+  background:rgba(232,0,30,.06);
+  animation:glow-r 2s ease-in-out infinite;
+}
+.alert-y {
+  border:2px solid rgba(245,168,0,.5); border-radius:6px;
+  padding:16px 20px; text-align:center;
+  background:rgba(245,168,0,.05);
+  animation:glow-y 2.2s ease-in-out infinite;
+}
+.alert-txt-r {
+  font-family:var(--fw-cond); font-weight:800;
+  font-size:15px; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--red);
+}
+.alert-txt-y {
+  font-family:var(--fw-cond); font-weight:800;
+  font-size:15px; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--yellow);
+}
+
+/* estrutura icons */
+.est-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.est-cell {
+  background:var(--bg3); border:1px solid var(--ln2); border-radius:6px;
+  padding:20px 16px; text-align:center;
+  transition:border-color .2s, background .2s;
+  cursor:default;
+}
+.est-cell:hover { border-color:rgba(245,168,0,.3); background:rgba(245,168,0,.04); }
+.est-icon { font-size:28px; margin-bottom:8px; }
+.est-name {
+  font-family:var(--fw-cond); font-weight:700;
+  font-size:13px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--t1);
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 4 — DIFERENCIAIS (image 5)
+═══════════════════════════════════════════ */
+.diff-section { background:var(--bg2); }
+.diff-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:40px; }
+.diff-card {
+  background:var(--bg3); border:1px solid var(--ln2); border-radius:6px;
+  padding:24px 22px;
+  transition:border-color .2s, transform .2s;
+}
+.diff-card:hover { border-color:rgba(245,168,0,.25); transform:translateY(-2px); }
+.diff-card:last-child { grid-column:1 / -1; }
+.diff-card:last-child:not(:nth-child(2n)) { grid-column:1; }
+/* if odd total, last spans */
+.diff-grid .diff-card:last-child:nth-child(odd) { grid-column:1 / -1; max-width:calc(50% - 5px); }
+.diff-card-title {
+  font-family:var(--fw-cond); font-weight:700;
+  font-size:13px; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--yellow); margin-bottom:8px;
+}
+.diff-card-body { font-size:15px; color:var(--t2); line-height:1.5; }
+
+/* ═══════════════════════════════════════════
+   SECTION 5 — INVESTIMENTO
+═══════════════════════════════════════════ */
+.invest-section { background:var(--bg); }
+.invest-wrap {
+  display:grid; grid-template-columns:1fr 1fr; gap:32px;
+  margin-top:40px; align-items:start;
+}
+
+.invest-card {
+  background:var(--bg2); border:1px solid var(--ln2);
+  border-top:3px solid var(--red);
+  border-radius:8px; padding:40px 36px; text-align:center;
+}
+.invest-lbl {
+  font-family:var(--fw-cond); font-weight:700;
+  font-size:11px; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--t2); margin-bottom:16px;
+}
+.invest-val {
+  font-family:var(--fw-head); font-size:72px; line-height:1;
+  color:var(--red); margin-bottom:8px;
+}
+.invest-sub {
+  font-size:14px; color:var(--t2); margin-bottom:28px; line-height:1.6;
+}
+.invest-prazo {
+  display:inline-block;
+  font-family:var(--fw-cond); font-weight:700;
+  font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--yellow); background:rgba(245,168,0,.1);
+  border:1px solid rgba(245,168,0,.3);
+  border-radius:2px; padding:6px 14px;
+}
+
+.invest-pgto { display:flex; flex-direction:column; gap:12px; }
+.pgto-step {
+  background:var(--bg2); border:1px solid var(--ln2); border-radius:6px;
+  padding:20px 22px; display:flex; align-items:center; gap:16px;
+}
+.pgto-n {
+  font-family:var(--fw-head); font-size:42px;
+  color:var(--red); line-height:1; flex-shrink:0; width:50px; text-align:center;
+}
+.pgto-info {}
+.pgto-pct {
+  font-family:var(--fw-cond); font-weight:700;
+  font-size:18px; letter-spacing:.06em; color:var(--t1); margin-bottom:2px;
+}
+.pgto-desc { font-size:13px; color:var(--t2); }
+
+.invest-extras { margin-top:12px; display:flex; flex-direction:column; gap:10px; }
+.extra-item {
+  display:flex; align-items:center; gap:12px;
+  font-size:14px; color:var(--t2); padding:12px 16px;
+  background:var(--bg2); border:1px solid var(--ln); border-radius:4px;
+}
+.extra-icon { color:var(--green); font-size:16px; flex-shrink:0; }
+
+/* escopo table */
+.escopo-table { width:100%; border-collapse:collapse; margin-top:40px; }
+.escopo-table th {
+  font-family:var(--fw-cond); font-weight:700;
+  font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--t2); padding:10px 14px; text-align:left;
+  border-bottom:1px solid var(--ln2);
+}
+.escopo-table td {
+  font-size:14px; color:var(--t2); padding:11px 14px;
+  border-bottom:1px solid var(--ln);
+  vertical-align:top;
+}
+.escopo-table tr:last-child td { border-bottom:none; }
+.escopo-table td:first-child { color:var(--t1); font-weight:500; }
+.check { color:var(--green); font-size:15px; margin-right:6px; }
+.cross { color:var(--t3); font-size:15px; margin-right:6px; }
+
+/* ═══════════════════════════════════════════
+   SECTION 6 — PROCESSO
+═══════════════════════════════════════════ */
+.process-section { background:var(--bg2); }
+.process-steps {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:14px;
+  margin-top:40px;
+}
+.step {
+  background:var(--bg3); border:1px solid var(--ln2); border-radius:6px;
+  padding:22px 20px; position:relative; overflow:hidden;
+  transition:border-color .2s;
+}
+.step:hover { border-color:rgba(245,168,0,.25); }
+.step::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+}
+.step:nth-child(1)::before,.step:nth-child(2)::before { background:var(--red); }
+.step:nth-child(3)::before,.step:nth-child(4)::before { background:var(--yellow); }
+.step:nth-child(5)::before,.step:nth-child(6)::before { background:var(--green); }
+.step-n {
+  font-family:var(--fw-head); font-size:48px; line-height:1;
+  margin-bottom:8px;
+}
+.step:nth-child(1) .step-n,.step:nth-child(2) .step-n { color:var(--red); }
+.step:nth-child(3) .step-n,.step:nth-child(4) .step-n { color:var(--yellow); }
+.step:nth-child(5) .step-n,.step:nth-child(6) .step-n { color:var(--green); }
+.step-title {
+  font-family:var(--fw-cond); font-weight:700;
+  font-size:15px; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--t1); margin-bottom:6px;
+}
+.step-desc { font-size:13px; color:var(--t2); line-height:1.55; }
+
+/* ═══════════════════════════════════════════
+   CTA FINAL
+═══════════════════════════════════════════ */
+.cta-section {
+  background:var(--bg);
+  padding:100px 0;
+  position:relative; overflow:hidden;
+  text-align:center;
+}
+.cta-section::before {
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background:radial-gradient(ellipse 70% 60% at 50% 50%, rgba(232,0,30,.06) 0%, transparent 70%);
+}
+.cta-quote {
+  font-family:var(--fw-cond); font-weight:700;
+  font-size:clamp(18px,3vw,24px);
+  letter-spacing:.06em; text-transform:uppercase;
+  color:var(--t2); margin-bottom:16px;
+  position:relative;
+}
+.cta-quote span { color:var(--red); }
+.cta-headline {
+  font-family:var(--fw-head);
+  font-size:clamp(42px,7vw,88px);
+  line-height:.95; letter-spacing:.03em;
+  color:var(--t1); margin-bottom:12px;
+  position:relative;
+}
+.cta-headline .hl { color:var(--yellow); }
+.cta-sub {
+  font-size:16px; color:var(--t2); margin-bottom:44px;
+  position:relative;
+}
+.cta-btn {
+  display:inline-block;
+  font-family:var(--fw-cond); font-weight:800;
+  font-size:16px; letter-spacing:.14em; text-transform:uppercase;
+  color:#fff; background:var(--red);
+  padding:18px 44px; border-radius:3px;
+  text-decoration:none;
+  transition:background .15s, transform .15s;
+  position:relative;
+  box-shadow:0 0 40px rgba(232,0,30,.25);
+}
+.cta-btn:hover { background:#c8001a; transform:translateY(-2px); }
+.cta-btn::after {
+  content:''; position:absolute; inset:-2px;
+  border:1px solid rgba(232,0,30,.3); border-radius:4px;
+  pointer-events:none;
+}
+
+/* ═══════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════ */
+.footer {
+  background:var(--bg2); border-top:1px solid var(--ln);
+  padding:32px 0;
+}
+.footer-inner {
+  display:flex; align-items:center; justify-content:space-between;
+  gap:20px; flex-wrap:wrap;
+}
+.footer-logo {
+  font-family:var(--fw-head); font-size:18px; letter-spacing:.1em;
+  color:var(--t1);
+}
+.footer-logo span { color:var(--yellow); }
+.footer-copy { font-size:12px; color:var(--t3); }
+.footer-tag {
+  font-family:var(--fw-cond); font-weight:600;
+  font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--t3);
+}
+
+/* ═══════════════════════════════════════════
+   TICKER
+═══════════════════════════════════════════ */
+.ticker-bar {
+  display: none !important;
+  background:var(--red); overflow:hidden; height:36px;
+  display:flex; align-items:center;
+}
+.ticker-track {
+  display:flex; align-items:center; gap:0;
+  animation:ticker 28s linear infinite;
+  white-space:nowrap;
+}
+.ticker-item {
+  font-family:var(--fw-cond); font-weight:700;
+  font-size:13px; letter-spacing:.12em; text-transform:uppercase;
+  color:#fff; padding:0 32px;
+}
+.ticker-item::before { content:'◆'; margin-right:16px; opacity:.6; }
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media(max-width:800px){
+  .hero-layout,.hero-cards,.avisos-grid,.recursos-grid,
+  .diff-grid,.invest-wrap,.process-steps { grid-template-columns:1fr; }
+  .hero-preview { display:none; }
+  .demo-mini-row { grid-template-columns:1fr 1fr; }
+  .diff-grid .diff-card:last-child:nth-child(odd) { grid-column:1; max-width:100%; }
+  .process-steps { grid-template-columns:1fr 1fr; }
+  .footer-inner { flex-direction:column; text-align:center; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<nav class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-logo">ATTEND <span>·</span> FOCONET</div>
+    <div class="topbar-sep"></div>
+    <div class="topbar-tag">Proposta Comercial — Confidencial</div>
+    <div class="topbar-sp"></div>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-layout">
+
+      <div class="hero-content reveal">
+        <div class="hero-eyebrow">Proposta Comercial</div>
+        <h1 class="hero-title">
+          SOLUÇÃO<br><span class="hl">OPERACIONAL</span><br>VISUAL
+        </h1>
+        <div class="hero-subtitle">Painel de Triagem e Gestão de Ocorrências Operacionais</div>
+        <div class="hero-client">Cliente: <strong>Attend / Foconet Sistemas</strong></div>
+
+        <div class="hero-cards">
+          <div class="hcard">
+            <div class="hcard-title">Leitura Instantânea</div>
+            <div class="hcard-body">Informações claras e legíveis à longa distância.</div>
+          </div>
+          <div class="hcard">
+            <div class="hcard-title">Agilidade Operacional</div>
+            <div class="hcard-body">Redução de filas e melhor tomada de decisão.</div>
+          </div>
+          <div class="hcard">
+            <div class="hcard-title">Priorização Inteligente</div>
+            <div class="hcard-body">Ocorrências críticas sempre em destaque.</div>
+          </div>
+          <div class="hcard">
+            <div class="hcard-title">Gestão Eficiente</div>
+            <div class="hcard-body">Painel visual pensado para ambientes industriais.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LIVE MINI DASHBOARD PREVIEW -->
+      <div class="hero-preview reveal" style="transition-delay:.2s">
+        <div class="mini-hdr">
+          <div class="mini-hdr-logo">ATTEND <em>·</em> FOCONET</div>
+          <div class="mini-hdr-sep"></div>
+          <div class="mini-hdr-live"><div class="mini-dot"></div>AO VIVO</div>
+          <div class="mini-hdr-clk" id="mini-clock">--:--:--</div>
+        </div>
+        <div class="mini-cards">
+          <div class="mini-card mc-r">
+            <div class="mini-plate">ELV1D34</div>
+            <div class="mini-tipo">Sem Cobertura</div>
+            <div class="mini-tempo" id="mc1">00:47:23</div>
+          </div>
+          <div class="mini-card mc-a">
+            <div class="mini-plate">DPT0F72</div>
+            <div class="mini-tipo">Contrato</div>
+            <div class="mini-tempo" id="mc2">00:38:11</div>
+          </div>
+          <div class="mini-card mc-g">
+            <div class="mini-plate">GIK2537</div>
+            <div class="mini-tipo">Efluente</div>
+            <div class="mini-tempo" id="mc3">00:22:05</div>
+          </div>
+          <div class="mini-card mc-b">
+            <div class="mini-plate">CXE3J15</div>
+            <div class="mini-tipo">Laboratório</div>
+            <div class="mini-tempo" id="mc4">00:19:44</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-bar">
+  <div class="ticker-track">
+    <span class="ticker-item">Leitura instantânea</span>
+    <span class="ticker-item">Priorização visual automática</span>
+    <span class="ticker-item">Alertas críticos piscantes</span>
+    <span class="ticker-item">Tempo na fila em tempo real</span>
+    <span class="ticker-item">Telão industrial</span>
+    <span class="ticker-item">Módulo de avisos operacionais</span>
+    <span class="ticker-item">Intercalação inteligente</span>
+    <span class="ticker-item">Leitura instantânea</span>
+    <span class="ticker-item">Priorização visual automática</span>
+    <span class="ticker-item">Alertas críticos piscantes</span>
+    <span class="ticker-item">Tempo na fila em tempo real</span>
+    <span class="ticker-item">Telão industrial</span>
+  </div>
+</div>
+
+<!-- ═══ PAINEL PRINCIPAL ═══ -->
+<section class="painel-section section" id="painel">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-label">01 — Painel Principal</div>
+      <h2 class="sec-title">PAINEL OPERACIONAL<br><span class="hl">PRIORIDADES CRÍTICAS</span></h2>
+      <p class="sec-body">Ocorrências críticas possuem prioridade máxima visual para rápida tomada de ação operacional. Bater o olho e agir — sem demora, sem confusão.</p>
+    </div>
+
+    <div class="painel-demo reveal" style="transition-delay:.1s">
+      <!-- header -->
+      <div class="demo-hdr">
+        <div class="demo-brand">ATTEND <span>·</span> FOCONET</div>
+        <div class="demo-sep"></div>
+        <div class="demo-clk" id="demo-clock">--:--:--</div>
+        <div class="demo-live"><div class="demo-dot"></div>AO VIVO</div>
+        <div class="demo-sp"></div>
+        <div class="demo-queue">AGUARDANDO ATENDIMENTO<span id="queue-n">32</span></div>
+      </div>
+
+      <!-- main content -->
+      <div class="demo-body">
+        <div class="demo-main-grid">
+          <div class="demo-critical">
+            <div class="demo-crit-label">● OCORRÊNCIA CRÍTICA PRIORITÁRIA</div>
+            <div class="demo-crit-placa">ELV1D34</div>
+            <div class="demo-crit-empresa">CONSÓRCIO AVBN — PAC 22/23</div>
+            <div class="demo-crit-badge">PENDÊNCIA</div>
+            <div class="demo-crit-status">AGUARDANDO PESAGEM</div>
+          </div>
+          <div class="demo-time-box">
+            <div class="demo-time-lbl">TEMPO NA FILA</div>
+            <div class="demo-time-val" id="crit-time">00:47:23</div>
+            <div class="demo-time-chegada">Chegada • 08:29:17</div>
+          </div>
+        </div>
+
+        <div class="demo-mini-row">
+          <div class="demo-mc r">
+            <div class="demo-mc-placa">DPT0F72</div>
+            <div class="demo-mc-emp">Consórcio AVBN</div>
+            <div class="demo-mc-tipo">Documentação Pendente</div>
+            <div class="demo-mc-tempo">Tempo • <span id="mc-t1">00:38:11</span></div>
+          </div>
+          <div class="demo-mc a">
+            <div class="demo-mc-placa">GIK2537</div>
+            <div class="demo-mc-emp">Sustentar Logística</div>
+            <div class="demo-mc-tipo">Efluente Fora Padrão</div>
+            <div class="demo-mc-tempo">Tempo • <span id="mc-t2">00:22:05</span></div>
+          </div>
+          <div class="demo-mc y">
+            <div class="demo-mc-placa">CXE3J15</div>
+            <div class="demo-mc-emp">Rio Claro Transportes</div>
+            <div class="demo-mc-tipo">Divergência Laboratorial</div>
+            <div class="demo-mc-tempo">Tempo • <span id="mc-t3">00:19:44</span></div>
+          </div>
+          <div class="demo-mc n">
+            <div class="demo-mc-placa">MST8B34</div>
+            <div class="demo-mc-emp">Verde Soluções</div>
+            <div class="demo-mc-tipo">Aguardando Análise</div>
+            <div class="demo-mc-tempo">Tempo • <span id="mc-t4">00:15:22</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ AVISOS + INTERCALAÇÃO ═══ -->
+<section class="avisos-section section" id="avisos">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-label">02 / 03 — Módulos Complementares</div>
+      <h2 class="sec-title">AVISOS <span class="hl">OPERACIONAIS</span><br>+ INTERCALAÇÃO</h2>
+    </div>
+
+    <div class="avisos-grid">
+      <div class="aviso-demo reveal">
+        <div class="aviso-sec-title">2. Módulo de Avisos Operacionais</div>
+        <div class="aviso-sec-sub">Tela de avisos alternada automaticamente.</div>
+        <div class="aviso-card">
+          <div class="aviso-card-head">ATENÇÃO!</div>
+          <div class="aviso-card-body">USO OBRIGATÓRIO<br>DE EPI</div>
+        </div>
+      </div>
+
+      <div class="aviso-demo reveal" style="transition-delay:.1s">
+        <div class="aviso-sec-title">3. Intercalação Inteligente</div>
+        <div class="aviso-sec-sub">Alternância automática entre conteúdos.</div>
+        <div class="inter-list">
+          <div class="inter-item">
+            <div class="inter-bar" style="background:var(--yellow)"></div>
+            <div class="inter-info">
+              <div class="inter-name">Painel de Ocorrências</div>
+              <div class="inter-time">40 segundos</div>
+            </div>
+          </div>
+          <div class="inter-item">
+            <div class="inter-bar" style="background:var(--red)"></div>
+            <div class="inter-info">
+              <div class="inter-name">Avisos Operacionais</div>
+              <div class="inter-time">15 segundos</div>
+            </div>
+          </div>
+          <div class="inter-item">
+            <div class="inter-bar" style="background:var(--green)"></div>
+            <div class="inter-info">
+              <div class="inter-name">Indicadores Operacionais</div>
+              <div class="inter-time">10 segundos</div>
+            </div>
+          </div>
+          <div class="inter-item">
+            <div class="inter-bar" style="background:var(--purple)"></div>
+            <div class="inter-info">
+              <div class="inter-name">Comunicados Internos</div>
+              <div class="inter-time">15 segundos</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ RECURSOS + ESTRUTURA ═══ -->
+<section class="recursos-section section" id="recursos">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-label">04 / 05 — Recursos e Estrutura</div>
+      <h2 class="sec-title">RECURSOS <span class="hl">DINÂMICOS</span><br>+ ESTRUTURA</h2>
+    </div>
+
+    <div class="recursos-grid">
+      <div class="rec-box reveal">
+        <div class="rec-title">4. Recursos Visuais Dinâmicos</div>
+        <div class="rec-sub">Exemplos de alertas e destaques visuais.</div>
+        <div class="alert-demo">
+          <div class="alert-r">
+            <div class="alert-txt-r">ELV1D34 • DOCUMENTAÇÃO PENDENTE</div>
+          </div>
+          <div class="alert-y">
+            <div class="alert-txt-y">DPT0F72 • AGUARDANDO PESAGEM</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rec-box reveal" style="transition-delay:.1s">
+        <div class="rec-title">5. Estrutura Operacional</div>
+        <div class="rec-sub">Preparado para TVs, telões e desktops operacionais.</div>
+        <div class="est-grid">
+          <div class="est-cell">
+            <div class="est-icon">🖥️</div>
+            <div class="est-name">Triagem</div>
+          </div>
+          <div class="est-cell">
+            <div class="est-icon">🔬</div>
+            <div class="est-name">Laboratório</div>
+          </div>
+          <div class="est-cell">
+            <div class="est-icon">📊</div>
+            <div class="est-name">Administrativo</div>
+          </div>
+          <div class="est-cell">
+            <div class="est-icon">🚛</div>
+            <div class="est-name">Fila Externa</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ DIFERENCIAIS ═══ -->
+<section class="diff-section section" id="diferenciais">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-label">Diferenciais</div>
+      <h2 class="sec-title">POR QUE ESTA<br><span class="hl">SOLUÇÃO?</span></h2>
+    </div>
+
+    <div class="diff-grid">
+      <div class="diff-card reveal">
+        <div class="diff-card-title">Foco Operacional</div>
+        <div class="diff-card-body">Design pensado para o dia a dia da operação industrial. Não é só visual — é ferramenta de decisão.</div>
+      </div>
+      <div class="diff-card reveal" style="transition-delay:.06s">
+        <div class="diff-card-title">Leitura à Distância</div>
+        <div class="diff-card-body">Elementos visuais otimizados para telões LED outdoor. Legível a metros de distância, em qualquer condição.</div>
+      </div>
+      <div class="diff-card reveal" style="transition-delay:.12s">
+        <div class="diff-card-title">Agilidade e Eficiência</div>
+        <div class="diff-card-body">Informações que geram ação rápida e decisões assertivas sem depender de rádio ou comunicação verbal.</div>
+      </div>
+      <div class="diff-card reveal" style="transition-delay:.18s">
+        <div class="diff-card-title">Tecnologia e Design</div>
+        <div class="diff-card-body">Interface moderna, robusta e preparada para expansão. Estrutura frontend pronta para integração futura.</div>
+      </div>
+      <div class="diff-card reveal" style="transition-delay:.24s">
+        <div class="diff-card-title">Solução Visual Completa</div>
+        <div class="diff-card-body">Transformando informação operacional em ação imediata. Da triagem ao descarte, tudo em um painel.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PROCESSO ═══ -->
+<section class="process-section section" id="processo">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-label">Processo</div>
+      <h2 class="sec-title">ETAPAS DE<br><span class="hl">DESENVOLVIMENTO</span></h2>
+    </div>
+
+    <div class="process-steps">
+      <div class="step reveal">
+        <div class="step-n">01</div>
+        <div class="step-title">Protótipo Operacional</div>
+        <div class="step-desc">Estrutura inicial com layout principal e hierarquia de informações.</div>
+      </div>
+      <div class="step reveal" style="transition-delay:.06s">
+        <div class="step-n">02</div>
+        <div class="step-title">Conceito Visual</div>
+        <div class="step-desc">Aplicação do sistema de cores, tipografia industrial e componentes visuais.</div>
+      </div>
+      <div class="step reveal" style="transition-delay:.12s">
+        <div class="step-n">03</div>
+        <div class="step-title">Refinamento Visual</div>
+        <div class="step-desc">Ajuste de proporções, contraste, legibilidade e microinterações.</div>
+      </div>
+      <div class="step reveal" style="transition-delay:.18s">
+        <div class="step-n">04</div>
+        <div class="step-title">Estrutura Frontend</div>
+        <div class="step-desc">Desenvolvimento completo em HTML/CSS/JS com todas as funcionalidades.</div>
+      </div>
+      <div class="step reveal" style="transition-delay:.24s">
+        <div class="step-n">05</div>
+        <div class="step-title">Revisões e Ajustes</div>
+        <div class="step-desc">Até 2 rodadas de ajustes após apresentação da proposta visual aprovada.</div>
+      </div>
+      <div class="step reveal" style="transition-delay:.30s">
+        <div class="step-n">06</div>
+        <div class="step-title">Entrega Final</div>
+        <div class="step-desc">Arquivo final documentado e pronto para implementação operacional.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ INVESTIMENTO ═══ -->
+<section class="invest-section section" id="investimento">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-label">Investimento</div>
+      <h2 class="sec-title">PROPOSTA<br><span class="hl">COMERCIAL</span></h2>
+    </div>
+
+    <div class="invest-wrap">
+      <div class="reveal">
+        <div class="invest-card">
+          <div class="invest-lbl">Investimento Total</div>
+          <div class="invest-val">R$ 5.000</div>
+          <div class="invest-sub">Solução Operacional Visual<br>Painel Industrial de Triagem e Ocorrências</div>
+          <div class="invest-prazo">⏱ Prazo: 12 dias úteis</div>
+        </div>
+        <div class="invest-extras">
+          <div class="extra-item"><span class="extra-icon">✓</span> Até 2 rodadas de ajustes refinativos</div>
+          <div class="extra-item"><span class="extra-icon">✓</span> Suporte pós-entrega de 10 dias úteis</div>
+          <div class="extra-item"><span class="extra-icon">✓</span> Estrutura pronta para integração futura</div>
+          <div class="extra-item"><span class="extra-icon">✓</span> Dark Mode industrial + Light Mode</div>
+        </div>
+      </div>
+
+      <div class="reveal" style="transition-delay:.1s">
+        <div class="invest-pgto">
+          <div class="pgto-step">
+            <div class="pgto-n">01</div>
+            <div class="pgto-info">
+              <div class="pgto-pct">R$ 2.500,00 — 50%</div>
+              <div class="pgto-desc">Na aprovação e início do projeto</div>
+            </div>
+          </div>
+          <div class="pgto-step">
+            <div class="pgto-n">02</div>
+            <div class="pgto-info">
+              <div class="pgto-pct">R$ 2.500,00 — 50%</div>
+              <div class="pgto-desc">Na entrega do arquivo final aprovado</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:24px">
+          <div class="aviso-sec-title" style="font-size:14px;margin-bottom:14px">Escopo incluso:</div>
+          <table class="escopo-table">
+            <tr><th>Item</th><th>Status</th></tr>
+            <tr><td>UX/UI design visual</td><td><span class="check">✓</span>Incluso</td></tr>
+            <tr><td>Interface HTML/CSS/JS operacional</td><td><span class="check">✓</span>Incluso</td></tr>
+            <tr><td>Sistema de prioridades animado</td><td><span class="check">✓</span>Incluso</td></tr>
+            <tr><td>Módulo de avisos + intercalação</td><td><span class="check">✓</span>Incluso</td></tr>
+            <tr><td>Dark + Light Mode</td><td><span class="check">✓</span>Incluso</td></tr>
+            <tr><td>Integração com backend/API</td><td><span class="cross">—</span>Fora do escopo</td></tr>
+            <tr><td>Versão mobile/tablet</td><td><span class="cross">—</span>Fora do escopo</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER FINAL -->
+<div class="ticker-bar">
+  <div class="ticker-track">
+    <span class="ticker-item">Attend · Foconet Sistemas</span>
+    <span class="ticker-item">Solução Operacional Visual </span>
+    <span class="ticker-item">Painel de Triagem e Ocorrências</span>
+    <span class="ticker-item">Telão LED Industrial</span>
+    <span class="ticker-item">R$ 5.000 · 10 dias úteis</span>
+    <span class="ticker-item">Attend · Foconet Sistemas</span>
+    <span class="ticker-item">Solução Operacional Visual</span>
+    <span class="ticker-item">Painel de Triagem e Ocorrências</span>
+    <span class="ticker-item">Telão LED Industrial</span>
+    <span class="ticker-item">R$ 5.000 · 10 dias úteis</span>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-inner">
+      <div class="footer-logo">ATTEND <span>·</span> FOCONET</div>
+      <div class="footer-copy">Proposta Comercial — Uso Restrito e Confidencial · Maio 2026</div>
+      <div class="footer-tag">Solução Operacional Visual</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ── CLOCK ── */
+function updateClocks(){
+  const t = new Date();
+  const hms = t.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  document.getElementById('mini-clock').textContent = hms;
+  document.getElementById('demo-clock').textContent = hms;
+}
+updateClocks();
+setInterval(updateClocks, 1000);
+
+/* ── LIVE TIMERS ── */
+let secs = [47*60+23, 38*60+11, 22*60+5, 19*60+44, 38*60+11, 22*60+5, 19*60+44, 15*60+22];
+function fmt(s){ const m=Math.floor(s/60),ss=s%60; return `00:${String(m).padStart(2,'0')}:${String(ss).padStart(2,'0')}`; }
+function updateTimers(){
+  secs = secs.map(s=>s+1);
+  document.getElementById('crit-time').textContent = fmt(secs[0]);
+  document.getElementById('mc1').textContent = fmt(secs[0]);
+  document.getElementById('mc2').textContent = fmt(secs[1]);
+  document.getElementById('mc3').textContent = fmt(secs[2]);
+  document.getElementById('mc4').textContent = fmt(secs[3]);
+  document.getElementById('mc-t1').textContent = fmt(secs[4]);
+  document.getElementById('mc-t2').textContent = fmt(secs[5]);
+  document.getElementById('mc-t3').textContent = fmt(secs[6]);
+  document.getElementById('mc-t4').textContent = fmt(secs[7]);
+}
+setInterval(updateTimers, 1000);
+
+/* ── SCROLL REVEAL ── */
+const obs = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); obs.unobserve(e.target); } });
+}, { threshold:0.12 });
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
